@@ -15,7 +15,11 @@ jobs:
       - name: Unzip source
         run: unzip ilusion_cars_mod_src.zip
       - name: Build mod
-        run: cd ilusion_cars && chmod +x gradlew && ./gradlew build --no-daemon
+        run: |
+          ls -la
+          ls -la ilusion_cars/ || true
+          find . -name "gradlew" 2>/dev/null
+          cd ilusion_cars && chmod +x gradlew && ./gradlew build --no-daemon
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
