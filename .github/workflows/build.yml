@@ -29,15 +29,6 @@ jobs:
           cp -r forge_mdk/gradle $FOLDER/
           cp forge_mdk/settings.gradle $FOLDER/ || true
           sed -i 's/gradle-7.3.3-bin.zip/gradle-6.8.1-bin.zip/g' $FOLDER/gradle/wrapper/gradle-wrapper.properties
-          sed -i "s/mappings channel: 'official', version: '1.16.5'/mappings channel: 'snapshot', version: '20210309-1.16.5'/g" $FOLDER/build.gradle
+          sed -i "s/mappings channel: 'official', version: '1.16.5'/mappings channel: 'parchment', version: '2021.10.17-1.16.5'/g" $FOLDER/build.gradle
           echo "FOLDER=$FOLDER" >> $GITHUB_ENV
-      - name: Build mod
-        run: |
-          cd $FOLDER
-          chmod +x gradlew
-          ./gradlew build --no-daemon
-      - name: Upload JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: ilusioncar-mod
-          path: "*/build/libs/*.jar"
+      - name:
