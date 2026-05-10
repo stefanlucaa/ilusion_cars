@@ -12,16 +12,23 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+      - name: Download Forge MDK
+        run: |
+          wget https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.39/forge-1.16.5-36.2.39-mdk.zip
+          unzip forge-1.16.5-36.2.39-mdk.zip -d forge_mdk
       - name: Unzip source
         run: unzip ilusion_cars_mod_src.zip
-      - name: Build mod
+      - name: Copy Forge files
         run: |
-          ls -la
-          ls -la ilusion_cars/ || true
-          find . -name "gradlew" 2>/dev/null
-          cd ilusion_cars && chmod +x gradlew && ./gradlew build --no-daemon
+          cp forge_mdk/gradlew ilusion_cars/
+          cp forge_mdk/gradlew.bat ilusion_cars/
+          cp -r forge_mdk/gradle ilusion_cars/
+          cp forge_mdk/settings.gradle ilusion_cars/
+      - name: Build mod
+        run: cd ilusion_cars && chmod +x gradlew && ./gradlew build --no-daemon
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: ilusioncar-mod
           path: ilusion_cars/build/libs/*.jar
+          
