@@ -16,16 +16,21 @@ jobs:
         run: |
           wget https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.39/forge-1.16.5-36.2.39-mdk.zip
           unzip forge-1.16.5-36.2.39-mdk.zip -d forge_mdk
+          ls -la forge_mdk/
       - name: Unzip source
         run: unzip ilusion_cars_mod_src.zip
       - name: Copy Forge files and fix Gradle version
         run: |
-          MDK=$(find forge_mdk -name "gradlew" | head -1 | xargs dirname)
-          cp $MDK/gradlew ilusion_cars/
-          cp $MDK/gradlew.bat ilusion_cars/
-          cp -r $MDK/gradle ilusion_cars/
-          cp $MDK/settings.gradle ilusion_cars/ || true
+          cp forge_mdk/gradlew ilusion_cars/
+          cp forge_mdk/gradlew.bat ilusion_cars/
+          cp -r forge_mdk/gradle ilusion_cars/
+          cp forge_mdk/settings.gradle ilusion_cars/ || true
           sed -i 's/gradle-7.3.3-bin.zip/gradle-6.8.1-bin.zip/g' ilusion_cars/gradle/wrapper/gradle-wrapper.properties
-          cat ilusion_cars/gradle/wrapper/gradle-wrapper.properties
       - name: Build mod
-        run: cd i
+        run: cd ilusion_cars && chmod +x gradlew && ./gradlew build --no-daemon
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ilusioncar-mod
+          path: ilusion_cars/build/libs/*.jar
+        
