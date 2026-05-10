@@ -25,3 +25,7 @@ jobs:
           cp -r forge_mdk/gradle ilusion_cars/
           cp forge_mdk/settings.gradle ilusion_cars/ || true
           sed -i 's/gradle-7.3.3-bin.zip/gradle-6.8.1-bin.zip/g' ilusion_cars/gradle/wrapper/gradle-wrapper.properties
+          sed -i "s/mappings channel: 'official', version: '1.16.5'/mappings channel: 'snapshot', version: '20210309-1.16.5'/g" ilusion_cars/build.gradle
+      - name: Build mod
+        run: |
+          cd ilusion_
