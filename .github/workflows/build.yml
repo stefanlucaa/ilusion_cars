@@ -17,15 +17,27 @@ jobs:
           wget https://maven.minecraftforge.net/net/minecraftforge/forge/1.16.5-36.2.39/forge-1.16.5-36.2.39-mdk.zip
           unzip forge-1.16.5-36.2.39-mdk.zip -d forge_mdk
       - name: Unzip source
-        run: unzip ilusion_cars_mod_src.zip
+        run: |
+          unzip ilusion_cars_mod_src.zip
+          ls -la
       - name: Copy Forge files and fix settings
         run: |
-          cp forge_mdk/gradlew ilusion_cars/
-          cp forge_mdk/gradlew.bat ilusion_cars/
-          cp -r forge_mdk/gradle ilusion_cars/
-          cp forge_mdk/settings.gradle ilusion_cars/ || true
-          sed -i 's/gradle-7.3.3-bin.zip/gradle-6.8.1-bin.zip/g' ilusion_cars/gradle/wrapper/gradle-wrapper.properties
-          sed -i "s/mappings channel: 'official', version: '1.16.5'/mappings channel: 'snapshot', version: '20210309-1.16.5'/g" ilusion_cars/build.gradle
+          FOLDER=$(ls -d */ | grep -i ilusion | head -1 | tr -d '/')
+          echo "Folder gasit: $FOLDER"
+          cp forge_mdk/gradlew $FOLDER/
+          cp forge_mdk/gradlew.bat $FOLDER/
+          cp -r forge_mdk/gradle $FOLDER/
+          cp forge_mdk/settings.gradle $FOLDER/ || true
+          sed -i 's/gradle-7.3.3-bin.zip/gradle-6.8.1-bin.zip/g' $FOLDER/gradle/wrapper/gradle-wrapper.properties
+          sed -i "s/mappings channel: 'official', version: '1.16.5'/mappings channel: 'snapshot', version: '20210309-1.16.5'/g" $FOLDER/build.gradle
+          echo "FOLDER=$FOLDER" >> $GITHUB_ENV
       - name: Build mod
         run: |
-          cd ilusion_
+          cd $FOLDER
+          chmod +x gradlew
+          ./gradlew build --no-daemon
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ilusioncar-mod
+          path: "*/build/libs/*.jar"
